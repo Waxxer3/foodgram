@@ -1,35 +1,28 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.exceptions import ValidationError
+
+from .constants import EMAIL_MAX_LENGTH, USER_FIELD_MAX_LENGTH
 
 
 class User(AbstractUser):
     """Кастомная модель пользователя. Вход по email вместо username."""
     email = models.EmailField(
         'Адрес электронной почты',
-        max_length=254,
+        max_length=EMAIL_MAX_LENGTH,
         unique=True,
     )
-    first_name = models.CharField('Имя', max_length=150)
-    last_name = models.CharField('Фамилия', max_length=150)
-    username = models.CharField('Никнейм', max_length=150, unique=True)
+    first_name = models.CharField('Имя', max_length=USER_FIELD_MAX_LENGTH)
+    last_name = models.CharField('Фамилия', max_length=USER_FIELD_MAX_LENGTH)
+    username = models.CharField(
+        'Никнейм',
+        max_length=USER_FIELD_MAX_LENGTH,
+        unique=True
+    )
     avatar = models.ImageField(
         'Аватар',
         upload_to='users/images/',
         null=True,
         blank=True
-    )
-    groups = models.ManyToManyField(
-        Group,
-        related_name='custom_users',
-        blank=True,
-        verbose_name='Группы'
-    )
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name='custom_users_permissions',
-        blank=True,
-        verbose_name='Права пользователя'
     )
 
     USERNAME_FIELD = 'email'
@@ -62,11 +55,18 @@ class Subscription(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        unique_together = ('user', 'author')
-
-    def clean(self):
-        if self.user == self.author:
-            raise ValidationError('Нельзя подписаться на самого себя')
+        constraints = [
+            # Уникальность пары подписчик-автор
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_subscription'
+            ),
+            # Запрет подписки на самого себя (уровень Junior)
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('author')),
+                name='no_self_subscription'
+            )
+        ]
 
     def __str__(self):
         return f'{self.user} подписан на {self.author}'

@@ -5,7 +5,11 @@ from rest_framework.response import Response
 
 from .models import Subscription
 from users.models import User
-from .serializers import SubscribeSerializer, UserSerializer
+from .serializers import (
+    SubscribeSerializer,
+    UserSerializer,
+    SubscriptionCreateSerializer
+)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -25,8 +29,8 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         """Список авторов, на которых подписан текущий пользователь."""
         user = request.user
         queryset = User.objects.filter(subscribers__user=user)
-
         page = self.paginate_queryset(queryset)
+
         if page is not None:
             serializer = SubscribeSerializer(
                 page, many=True, context={'request': request}
@@ -49,33 +53,20 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         author = get_object_or_404(User, pk=pk)
 
         if request.method == 'POST':
-            if user == author:
-                return Response(
-                    {'detail': 'Нельзя подписаться на самого себя'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            if Subscription.objects.filter(user=user, author=author).exists():
-                return Response(
-                    {'detail': 'Вы уже подписаны на этого автора'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            Subscription.objects.create(user=user, author=author)
-            serializer = SubscribeSerializer(
-                author, context={'request': request}
+            serializer = SubscriptionCreateSerializer(
+                data={'user': user.id, 'author': author.id},
+                context={'request': request}
             )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        subscription = Subscription.objects.filter(
-            user=user,
-            author=author
-        )
-
+        # Логика удаления (DELETE)
+        subscription = Subscription.objects.filter(user=user, author=author)
         if not subscription.exists():
             return Response(
-                {'detail': 'Вы не подписаны на этого автора'},
+                {'errors': 'Вы не подписаны на этого автора'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
         subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -48,18 +48,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+    permission_classes = (IsAuthorOrReadOnly,)
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
             return RecipeReadSerializer
         return RecipeWriteSerializer
 
-    def get_permissions(self):
-        if self.action in ('list', 'retrieve'):
-            return (permissions.AllowAny(),)
-        if self.action in ('create', 'favorite', 'shopping_cart'):
-            return (permissions.IsAuthenticated(),)
-        return (IsAuthorOrReadOnly(),)
+    @action(detail=True, methods=['get'], url_path='get-link')
+    def get_link(self, request, pk=None):
+        """Получение короткой ссылки на рецепт."""
+        recipe = self.get_object()
+        short_link = request.build_absolute_uri(f'/recipes/{recipe.id}/')
+        return Response({'short-link': short_link}, status=status.HTTP_200_OK)
 
     @action(
         detail=False,

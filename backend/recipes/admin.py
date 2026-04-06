@@ -25,8 +25,8 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'color')
-    list_editable = ('color',)
+    list_display = ('id', 'slug', 'name')
+    search_fields = ('name',)
 
 
 @admin.register(Recipe)

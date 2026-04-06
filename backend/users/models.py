@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from users.constants import EMAIL_MAX_LENGTH, USER_FIELD_MAX_LENGTH
+from .constants import EMAIL_MAX_LENGTH, USER_FIELD_MAX_LENGTH
 
 
 class User(AbstractUser):
@@ -56,17 +56,15 @@ class Subscription(models.Model):
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [
-            # Уникальность пары подписчик-автор
             models.UniqueConstraint(
                 fields=['user', 'author'],
                 name='unique_subscription'
             ),
-            # Запрет подписки на самого себя (уровень Junior)
             models.CheckConstraint(
                 check=~models.Q(user=models.F('author')),
                 name='no_self_subscription'
             )
         ]
 
-    def __str__(self):
+    def __str__(self): 
         return f'{self.user} подписан на {self.author}'

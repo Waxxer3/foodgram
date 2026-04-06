@@ -9,7 +9,6 @@ class RecipeFilter(FilterSet):
     Позволяет фильтровать по тегам, автору, наличию в избранном и корзине.
     """
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
-
     is_favorited = filters.BooleanFilter(method='filter_favorited')
     is_in_shopping_cart = filters.BooleanFilter(method='filter_shopping')
 

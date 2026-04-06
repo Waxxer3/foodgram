@@ -2,12 +2,19 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 from users.models import User
+from recipes.constants import (
+    MAX_LENGTH_NAME, MAX_LENGTH_UNIT, MAX_LENGTH_SLUG,
+    MIN_AMOUNT, MIN_COOKING_TIME
+)
 
 
 class Ingredient(models.Model):
     """Модель ингредиента. Содержит название и единицы измерения."""
-    name = models.CharField('Название', max_length=200)
-    measurement_unit = models.CharField('Единица измерения', max_length=200)
+    name = models.CharField('Название', max_length=MAX_LENGTH_NAME)
+    measurement_unit = models.CharField(
+        'Единица измерения',
+        max_length=MAX_LENGTH_UNIT
+    )
 
     class Meta:
         verbose_name = 'Ингредиент'
@@ -26,8 +33,16 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     """Модель тега. Цветовая метка для группировки рецептов."""
-    name = models.CharField('Название', max_length=200, unique=True)
-    slug = models.SlugField('Уникальный слаг', max_length=200, unique=True)
+    name = models.CharField(
+        'Название',
+        max_length=MAX_LENGTH_NAME,
+        unique=True
+    )
+    slug = models.SlugField(
+        'Уникальный слаг',
+        max_length=MAX_LENGTH_SLUG,
+        unique=True
+    )
 
     class Meta:
         verbose_name = 'Тег'
@@ -45,7 +60,7 @@ class Recipe(models.Model):
         related_name='recipes',
         verbose_name='Автор'
     )
-    name = models.CharField('Название', max_length=200)
+    name = models.CharField('Название', max_length=MAX_LENGTH_NAME)
     image = models.ImageField(
         'Картинка',
         upload_to='recipes/images/'
@@ -64,7 +79,10 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления (в минутах)',
-        validators=[MinValueValidator(1, message='Минимум 1 минута!')]
+        validators=[MinValueValidator(
+            MIN_COOKING_TIME,
+            message=f'Минимум {MIN_COOKING_TIME} минут!'
+        )]
     )
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
@@ -92,7 +110,9 @@ class IngredientInRecipe(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         'Количество',
-        validators=[MinValueValidator(1, message='Минимум 1!')]
+        validators=[MinValueValidator(
+            MIN_AMOUNT,
+            message=f'Минимум {MIN_AMOUNT}!')]
     )
 
     class Meta:
@@ -124,9 +144,15 @@ class UserRecipeBaseModel(models.Model):
 
     class Meta:
         abstract = True
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_%(class)s'
+            )
+        ]
 
     def __str__(self):
-        return f'{self.user} -> {self.recipe}'
+        return f'{self.user.username} -> {self.recipe.name}'
 
 
 class Favorite(UserRecipeBaseModel):
@@ -135,12 +161,7 @@ class Favorite(UserRecipeBaseModel):
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         default_related_name = 'favorites'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'recipe'],
-                name='unique_favorite'
-            )
-        ]
+
 
 
 class ShoppingCart(UserRecipeBaseModel):
@@ -149,9 +170,4 @@ class ShoppingCart(UserRecipeBaseModel):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         default_related_name = 'shopping_cart'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'recipe'],
-                name='unique_shopping_cart'
-            )
-        ]
+

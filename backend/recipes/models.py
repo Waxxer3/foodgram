@@ -169,4 +169,3 @@ class ShoppingCart(UserRecipeBaseModel):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         default_related_name = 'shopping_cart'
-

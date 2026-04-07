@@ -12,7 +12,7 @@ from .serializers import (
 )
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
     Вьюсет для работы с пользователями и подписками.
     Поддерживает стандартный просмотр профилей и кастомные экшены подписок.

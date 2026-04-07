@@ -157,7 +157,7 @@ class UserRecipeBaseModel(models.Model):
 
 class Favorite(UserRecipeBaseModel):
     """Модель для хранения избранных рецептов пользователя."""
-    class Meta:
+    class Meta(UserRecipeBaseModel.Meta):
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         default_related_name = 'favorites'
@@ -165,7 +165,7 @@ class Favorite(UserRecipeBaseModel):
 
 class ShoppingCart(UserRecipeBaseModel):
     """Модель списка покупок пользователя."""
-    class Meta:
+    class Meta(UserRecipeBaseModel.Meta):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         default_related_name = 'shopping_cart'

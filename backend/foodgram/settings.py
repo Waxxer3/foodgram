@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'djoser',
+    'corsheaders',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
 ]
@@ -80,6 +81,7 @@ DJOSER = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -260,3 +262,8 @@ DEFAULT_FROM_EMAIL = os.getenv('EMAIL')
 CSRF_TRUSTED_ORIGINS = [
     'https://foodgramyandexprac.duckdns.org',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://foodgramyandexprac.duckdns.org',
+]
+CORS_ALLOW_CREDENTIALS = True

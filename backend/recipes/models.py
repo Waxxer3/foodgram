@@ -163,7 +163,6 @@ class Favorite(UserRecipeBaseModel):
         default_related_name = 'favorites'
 
 
-
 class ShoppingCart(UserRecipeBaseModel):
     """Модель списка покупок пользователя."""
     class Meta:

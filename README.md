@@ -1,68 +1,100 @@
-# Yatube API
+# Foodgram — Продуктовый помощник
 
-Учебный REST API для работы с постами, комментариями и подписками.  
-Позволяет: создавать посты, оставлять комментарии, подписываться на пользователей и получать свои подписки.
+Foodgram — это веб-приложение, где пользователи могут публиковать рецепты, добавлять их в избранное, формировать список покупок и скачивать его.
 
----
 
-## Postman-коллекция для проверки API
+## Описание
 
-Файл `postman_collection/API_for_yatube.postman_collection.json` содержит коллекцию запросов для проверки работы API.
+Проект реализует REST API и фронтенд для сервиса публикации рецептов.
 
----
+Пользователи могут:
 
-## Подготовка Django-проекта к запуску коллекции
+* создавать рецепты
+* добавлять рецепты в избранное
+* добавлять рецепты в список покупок
+* скачивать список покупок
+* подписываться на авторов
 
-1. Проверьте, что виртуальное окружение развернуто и активировано, зависимости проекта установлены.
-2. Перейдите в директорию проекта создайте и активируйте виртуальное окружение, а также выполните миграции:
+
+## Технологии
+
+* Python 3.12
+* Django 6
+* Django REST Framework
+* PostgreSQL
+* Docker / Docker Compose
+* Nginx
+* Gunicorn
+
+
+## Как развернуть проект
+
+### 1. Клонировать репозиторий
 
 ```bash
-python -m venv venv
-source venv/bin/activate
+git clone <ссылка_на_репозиторий>
+cd foodgram
 ```
-Установите зависимости:
-```bash
-pip install -r requirements.txt
-```
-Выполните миграции:
-```bash
-python manage.py migrate
-```
-## Аутентификация
-```bash
-POST /api/v1/jwt/create/
-{
-    "username": "ваш_логин",
-    "password": "ваш_пароль"
-}
+
+
+### 2. Создать .env файл
+
+Пример:
+
+```env
+POSTGRES_DB=foodgram
+POSTGRES_USER=foodgram_user
+POSTGRES_PASSWORD=foodgram_password
+DB_HOST=db
+DB_PORT=5432
+SECRET_KEY=your_secret_key
+DEBUG=False
+ALLOWED_HOSTS=localhost,127.0.0.1
 ```
 
-## Запуск Docker-контейнеров
-Убедитесь, что у вас установлен Docker и Docker Compose. Находясь в папке infra/, запустите сборку:
+
+### 3. Запустить контейнеры
+
+Перейдите в папку infra:
 
 ```bash
+cd infra
 docker-compose up -d --build
 ```
 
-## Настройка базы данных и статики
-После успешного запуска выполните серию команд внутри контейнера backend:
-# Примените миграции:
-```bash
-docker-compose exec backend python manage.py migrate
-```
-# Соберите статику (админка и API):
+
+### 4. Выполнить миграции и собрать статику
 
 ```bash
-docker-compose exec backend python manage.py collectstatic
-docker-compose exec backend cp -r /app/static_backend/. /app/static/
+docker-compose exec backend python manage.py migrate
+docker-compose exec backend python manage.py collectstatic --no-input
 ```
-# Создайте суперпользователя (Администратора):
+
+
+### 5. Создать суперпользователя
 
 ```bash
 docker-compose exec backend python manage.py createsuperuser
 ```
-# Наполнение данными
-Чтобы не добавлять сотни ингредиентов вручную, воспользуйтесь командой импорта:
+
+### 6. Заполнить ингредиенты
+
 ```bash
 docker-compose exec backend python manage.py load_ingredients
 ```
+
+## Доступ к проекту
+
+* Сайт: http://foodgramyandexprac.duckdns.org
+* API: http://foodgramyandexprac.duckdns.org/api/
+* Админка: http://foodgramyandexprac.duckdns.org/admin/
+
+
+## Данные для входа в админку
+
+* Логин: Admin
+* Пароль: 57193
+
+## Автор
+
+* Waxxer3

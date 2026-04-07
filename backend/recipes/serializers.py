@@ -23,7 +23,7 @@ class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для работы с тегами."""
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'slug', 'color')
+        fields = ('id', 'name', 'slug')
 
 
 class IngredientInRecipeReadSerializer(serializers.ModelSerializer):

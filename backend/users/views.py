@@ -61,7 +61,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        # Логика удаления (DELETE)
         subscription = Subscription.objects.filter(user=user, author=author)
         if not subscription.exists():
             return Response(

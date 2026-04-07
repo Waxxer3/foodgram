@@ -5,22 +5,27 @@ services:
     image: postgres:13
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      POSTGRES_DB: foodgram
-      POSTGRES_USER: foodgram_user
-      POSTGRES_PASSWORD: foodgram_password
+    env_file:
+      - .env
 
   backend:
     build: ./backend
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+            python manage.py collectstatic --no-input &&
+            gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - ./backend:/app
-    ports:
-      - "8000:8000"
+      - static_value:/app/static/
+      - media_value:/app/media/
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
     depends_on:
       - db
 
 volumes:
   postgres_data:
+  static_value:
+  media_value:

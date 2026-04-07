@@ -92,7 +92,7 @@ docker-compose exec backend python manage.py load_ingredients
 
 ## Данные для входа в админку
 
-* Логин: Admin
+* Логин: waxxer3@gmail.com
 * Пароль: 57193
 
 ## Автор

@@ -34,6 +34,12 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
     filter_backends = (SearchFilter,)
     search_fields = ('^name',)
+    def get_queryset(self):
+        queryset = Ingredient.objects.all()
+        name = self.request.query_params.get('name')
+        if name:
+            queryset = queryset.filter(name__istartswith=name)
+        return queryset
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

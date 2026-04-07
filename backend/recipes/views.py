@@ -40,6 +40,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Просмотр тегов. Только чтение."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None
     permission_classes = (permissions.AllowAny,)
 
 

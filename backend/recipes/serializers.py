@@ -9,6 +9,7 @@ from .models import (
     ShoppingCart,
     Tag,
 )
+from users.models import Subscription
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -74,18 +75,26 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         )
 
     def get_author(self, obj):
-        """Возвращаем данные автора без импорта UserSerializer."""
         request = self.context.get('request')
         user = obj.author
         is_subscribed = False
-        if request:
-            is_subscribed = (
-                request.user.is_authenticated and 
-                user.subscribing.filter(user=request.user).exists()
-            )
+
+        if request and request.user.is_authenticated:
+            is_subscribed = Subscription.objects.filter(
+                user=request.user,
+                author=user
+            ).exists()
+
         avatar_url = None
-        if request and user.avatar:
-            avatar_url = request.build_absolute_uri(user.avatar.url)
+        if user.avatar:
+            try:
+                if request:
+                    avatar_url = request.build_absolute_uri(user.avatar.url)
+                else:
+                    avatar_url = user.avatar.url
+            except ValueError:
+                avatar_url = None
+
         return {
             'email': user.email,
             'id': user.id,

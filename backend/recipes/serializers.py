@@ -197,10 +197,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """Возвращает данные через RecipeReadSerializer после записи."""
-        return RecipeReadSerializer(
-            instance,
-            context={'request': self.context.get('request')}
-        ).data
+        return {'id': instance.id, 'status': 'success'}
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):

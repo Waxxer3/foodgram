@@ -262,6 +262,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://foodgramyandexprac.duckdns.org',
+    'https://foodgramyandexprac.duckdns.org',
+    'http://158.160.211.228',
 ]
 
 CORS_ALLOWED_ORIGINS = [

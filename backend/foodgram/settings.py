@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     'foodgramyandexprac.duckdns.org',
     'localhost',
     '127.0.0.1',
+    'backend',
 ]
 
 

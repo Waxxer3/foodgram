@@ -94,7 +94,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
                     )
                 else:
                     avatar_url = user.avatar.url
-            except ValueError:
+            except (ValueError, AttributeError):
                 avatar_url = None
 
         return {
@@ -111,18 +111,14 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
-        return Favorite.objects.filter(
-            user=request.user,
-            recipe=obj
-        ).exists()
+        return Favorite.objects.filter(user=request.user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
         return ShoppingCart.objects.filter(
-            user=request.user,
-            recipe=obj
+            user=request.user, recipe=obj
         ).exists()
 
 

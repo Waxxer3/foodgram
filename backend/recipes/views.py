@@ -22,7 +22,6 @@ from .serializers import (
     IngredientSerializer,
     TagSerializer
 )
-from .permissions import IsAuthorOrReadOnly
 from .filters import RecipeFilter
 from .pagination import CustomPagination
 

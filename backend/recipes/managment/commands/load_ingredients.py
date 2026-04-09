@@ -34,6 +34,7 @@ class Command(BaseCommand):
             ]
             Ingredient.objects.bulk_create(ingredients, ignore_conflicts=True)
 
+        count = Ingredient.objects.count()
         self.stdout.write(self.style.SUCCESS(
-            f'Загрузка завершена! Ингредиентов в базе: {Ingredient.objects.count()}'
+            f'Загрузка завершена! Ингредиентов в базе: {count}'
         ))

@@ -88,7 +88,12 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         avatar_url = None
         if user.avatar:
             try:
-                avatar_url = request.build_absolute_uri(user.avatar.url) if request else user.avatar.url
+                if request:
+                    avatar_url = request.build_absolute_uri(
+                        user.avatar.url
+                    )
+                else:
+                    avatar_url = user.avatar.url
             except (ValueError, AttributeError):
                 avatar_url = None
 

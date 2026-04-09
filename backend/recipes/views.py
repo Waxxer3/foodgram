@@ -37,10 +37,11 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ('^name',)
 
     def get_queryset(self):
-        queryset = Recipe.objects.all()
-        return self.filter_backends[0]().filter_queryset(
-            self.request, queryset, self
-        )
+        queryset = Ingredient.objects.all()
+        name = self.request.query_params.get('name')
+        if name:
+            queryset = queryset.filter(name__istartswith=name)
+        return queryset
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -57,6 +58,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = CustomPagination
+
+    def get_queryset(self):
+        queryset = Recipe.objects.all()
+        return self.filter_backends[0]().filter_queryset(
+            self.request, queryset, self
+        )
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):

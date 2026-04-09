@@ -24,6 +24,7 @@ from .serializers import (
 )
 from .permissions import IsAuthorOrReadOnly
 from .filters import RecipeFilter
+from .pagination import CustomPagination
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -55,7 +56,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    permission_classes = (IsAuthorOrReadOnly,)
+    pagination_class = CustomPagination
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):

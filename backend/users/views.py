@@ -28,7 +28,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def subscriptions(self, request):
         """Список авторов, на которых подписан текущий пользователь."""
         user = request.user
-        queryset = User.objects.filter(subscribers__user=user)
+        authors_ids = user.subscriptions.values_list('author_id', flat=True)
+        queryset = User.objects.filter(id__in=authors_ids)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = SubscribeSerializer(

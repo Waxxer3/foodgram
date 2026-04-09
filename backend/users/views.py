@@ -30,7 +30,6 @@ class UserViewSet(viewsets.ModelViewSet):
         user = request.user
         queryset = User.objects.filter(subscribers__user=user)
         page = self.paginate_queryset(queryset)
-
         if page is not None:
             serializer = SubscribeSerializer(
                 page, many=True, context={'request': request}

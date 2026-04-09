@@ -32,9 +32,11 @@ router.register('tags', TagViewSet, basename='tags')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('djoser.urls')),
-    path('api/auth/', include('djoser.urls.authtoken')),
-    path('api/', include(router.urls)),
+    path('api/', include([
+        path('auth/', include('djoser.urls.authtoken')),
+        path('', include('djoser.urls')),
+        path('', include(router.urls)),
+    ])),
 ]
 
 if settings.DEBUG:

@@ -1,6 +1,6 @@
 from django_filters.rest_framework import FilterSet, filters
 
-from .models import Recipe
+from .models import Recipe, Tag
 
 
 class RecipeFilter(FilterSet):
@@ -8,7 +8,11 @@ class RecipeFilter(FilterSet):
     Фильтр для рецептов.
     Позволяет фильтровать по тегам, автору, наличию в избранном и корзине.
     """
-    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
+    tags = filters.ModelMultipleChoiceFilter(
+        field_name='tags__slug',
+        to_field_name='slug',
+        queryset=Tag.objects.all(),
+    )
     is_favorited = filters.BooleanFilter(method='filter_favorited')
     is_in_shopping_cart = filters.BooleanFilter(method='filter_shopping')
 

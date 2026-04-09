@@ -159,12 +159,15 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return data
 
     def create_ingredients(self, recipe, ingredients_data):
-        for ingredient_data in ingredients_data:
-            IngredientInRecipe.objects.create(
+        objs = [
+            IngredientInRecipe(
                 recipe=recipe,
                 ingredient_id=ingredient_data['id'],
                 amount=ingredient_data['amount']
             )
+            for ingredient_data in ingredients_data
+        ]
+        IngredientInRecipe.objects.bulk_create(objs)
 
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
@@ -190,7 +193,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """Возвращает данные через RecipeReadSerializer после записи."""
-        return {'id': instance.id, 'status': 'success'}
+        return RecipeReadSerializer(instance, context=self.context).data
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):

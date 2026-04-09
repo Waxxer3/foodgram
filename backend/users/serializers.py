@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_extra_fields.fields import Base64ImageField
 
 from recipes.serializers import ShortRecipeSerializer
 from .models import User, Subscription
@@ -10,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     Добавляет проверку подписки текущего пользователя на автора.
     """
     is_subscribed = serializers.SerializerMethodField()
+    avatar = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         model = User
@@ -20,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'is_subscribed',
+            'avatar',
         )
 
     def get_is_subscribed(self, obj):
@@ -42,7 +45,8 @@ class SubscribeSerializer(UserSerializer):
         model = User
         fields = (
             'email', 'id', 'username', 'first_name',
-            'last_name', 'is_subscribed', 'recipes', 'recipes_count'
+            'last_name', 'is_subscribed', 'recipes', 'recipes_count',
+            'avatar',
         )
         read_only_fields = fields
 

@@ -69,3 +69,24 @@ class UserViewSet(viewsets.ModelViewSet):
             )
         subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        methods=['put', 'delete'],
+        detail=False,
+        url_path='me/avatar',
+        permission_classes=[permissions.IsAuthenticated]
+    )
+    def avatar(self, request):
+        """Метод для установки или удаления аватара пользователя."""
+        user = request.user
+
+        if request.method == 'DELETE':
+            if user.avatar:
+                user.avatar.delete()
+                user.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)

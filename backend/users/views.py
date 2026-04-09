@@ -23,6 +23,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
+        methods=['get'],
+        url_path='subscriptions',
         permission_classes=[permissions.IsAuthenticated]
     )
     def subscriptions(self, request):

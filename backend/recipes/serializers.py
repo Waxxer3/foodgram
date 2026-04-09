@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
 
-from users.serializers import UserSerializer
 from .models import (
     Favorite,
     Ingredient,
@@ -49,7 +48,7 @@ class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     """Сериализатор для отображения полной информации о рецепте."""
     image = Base64ImageField()
-    author = UserSerializer(read_only=True)
+    author = serializers.SerializerMethodField()
     tags = TagSerializer(many=True, read_only=True)
     ingredients = IngredientInRecipeReadSerializer(
         source='recipe_ingredients',
@@ -73,6 +72,29 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'is_favorited',
             'is_in_shopping_cart',
         )
+
+    def get_author(self, obj):
+        """Возвращаем данные автора без импорта UserSerializer."""
+        request = self.context.get('request')
+        user = obj.author
+        is_subscribed = False
+        if request:
+            is_subscribed = (
+                request.user.is_authenticated and 
+                user.subscribing.filter(user=request.user).exists()
+            )
+        avatar_url = None
+        if request and user.avatar:
+            avatar_url = request.build_absolute_uri(user.avatar.url)
+        return {
+            'email': user.email,
+            'id': user.id,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'is_subscribed': is_subscribed,
+            'avatar': avatar_url
+        }
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')

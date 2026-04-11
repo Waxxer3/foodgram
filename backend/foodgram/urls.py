@@ -32,9 +32,9 @@ router.register('tags', TagViewSet, basename='tags')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
     path('api/', include('djoser.urls')),
     path('api/', include('djoser.urls.authtoken')),
+    path('api/', include(router.urls)),
     path(
         's/<int:recipe_id>/',
         RecipeViewSet.as_view({'get': 'redirect_to_recipe'})

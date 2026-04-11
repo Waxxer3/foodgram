@@ -78,7 +78,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def redirect_to_recipe(self, request, recipe_id):
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        return redirect(f'/recipes/{recipe.id}/')
+        return redirect(f'/recipes/{recipe.id}')
 
     @action(
         detail=False,

@@ -73,6 +73,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'cooking_time',
             'is_favorited',
             'is_in_shopping_cart',
+            'short_link',
         )
 
     def get_author(self, obj):
@@ -123,10 +124,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_short_link(self, obj):
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(f'/s/{obj.id}/')
-        return f'/s/{obj.id}/'
+        return self.context.get('request').build_absolute_uri(f'/s/{obj.id}/')
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):

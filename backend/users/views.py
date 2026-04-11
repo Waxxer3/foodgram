@@ -91,13 +91,3 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    @action(
-        detail=False,
-        methods=['get'],
-        permission_classes=[permissions.IsAuthenticated]
-    )
-    def me(self, request):
-        """Возвращает профиль текущего пользователя."""
-        serializer = UserSerializer(request.user, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)

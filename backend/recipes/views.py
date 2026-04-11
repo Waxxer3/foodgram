@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Sum
-from django.shortcuts import redirect
 
 from .models import (
     IngredientInRecipe,
@@ -72,13 +71,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'], url_path='get-link')
     def get_link(self, request, pk=None):
-        return Response({
-            "short-link": request.build_absolute_uri(f"/s/{pk}/")
-        })
-
-    def redirect_to_recipe(self, request, recipe_id):
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        return redirect(f'/recipes/{recipe.id}')
+        """Получение короткой ссылки на рецепт."""
+        recipe = self.get_object()
+        short_link = request.build_absolute_uri(f'/recipes/{recipe.id}/')
+        return Response({'short-link': short_link}, status=status.HTTP_200_OK)
 
     @action(
         detail=False,

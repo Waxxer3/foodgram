@@ -121,6 +121,12 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             user=request.user, recipe=obj
         ).exists()
 
+    def get_short_link(self, obj):
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(f'/s/{obj.id}/')
+        return f'/s/{obj.id}/'
+
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()

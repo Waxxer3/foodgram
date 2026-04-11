@@ -75,3 +75,8 @@ class FavoriteAdmin(admin.ModelAdmin):
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
     search_fields = ('user__email', 'recipe__name')
+
+
+admin.site.site_header = 'Администрирование Foodgram'
+admin.site.index_title = 'Панель управления'
+admin.site.site_title = 'Foodgram'

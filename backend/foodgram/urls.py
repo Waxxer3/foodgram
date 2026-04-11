@@ -37,6 +37,7 @@ urlpatterns = [
         RecipeViewSet.as_view({'get': 'redirect_to_recipe'}),
         name='short_link'
     ),
+    path('api/users/subscriptions/', UserViewSet.as_view({'get': 'subscriptions'}), name='subscriptions'),
     path('api/', include(router.urls)),
     path('api/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),

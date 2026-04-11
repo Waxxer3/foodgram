@@ -124,7 +124,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_short_link(self, obj):
-        return self.context.get('request').build_absolute_uri(f'/s/{obj.id}/')
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(f'/s/{obj.id}/')
+        return f'/s/{obj.id}/'
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):

@@ -38,9 +38,9 @@ urlpatterns = [
         name='short_link'
     ),
     path('api/users/subscriptions/', UserViewSet.as_view({'get': 'subscriptions'}), name='subscriptions'),
-    path('api/', include(router.urls)),
     path('api/auth/', include('djoser.urls.authtoken')),
     path('api/', include('djoser.urls')),
+    path('api/', include(router.urls)),
 ]
 
 if settings.DEBUG:

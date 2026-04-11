@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -71,10 +71,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'], url_path='get-link')
     def get_link(self, request, pk=None):
-        """Получение короткой ссылки на рецепт."""
+        """Выдача короткой ссылки."""
         recipe = self.get_object()
-        short_link = request.build_absolute_uri(f'/recipes/{recipe.id}/')
+        short_link = request.build_absolute_uri(f'/s/{recipe.id}/')
         return Response({'short-link': short_link}, status=status.HTTP_200_OK)
+
+    def redirect_to_recipe(self, request, recipe_id=None):
+        """Редирект на страницу рецепта (для urls.py)."""
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        return redirect(f'/recipes/{recipe.id}/')
 
     @action(
         detail=False,

@@ -32,7 +32,6 @@ router.register('tags', TagViewSet, basename='tags')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/subscriptions/', UserViewSet.as_view({'get': 'subscriptions'}), name='subscriptions'),
     path('api/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
     path('s/<int:recipe_id>/', RecipeViewSet.as_view({'get': 'redirect_to_recipe'}), name='short_link'),

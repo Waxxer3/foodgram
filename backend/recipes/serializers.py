@@ -129,6 +129,13 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(f'/s/{obj.id}/')
         return f'/s/{obj.id}/'
 
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+        link = res.get('short_link')
+        res['short-link'] = link
+        res['short_link'] = link
+        return res
+
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()

@@ -1,8 +1,19 @@
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
+from djoser.serializers import UserCreateSerializer as DjoserUserCreateSerializer
 
 from recipes.serializers import ShortRecipeSerializer
 from .models import User, Subscription
+
+
+class UserCreateSerializer(DjoserUserCreateSerializer):
+    """Сериализатор для регистрации нового пользователя."""
+    class Meta(DjoserUserCreateSerializer.Meta):
+        model = User
+        fields = (
+            'email', 'id', 'username', 'first_name',
+            'last_name', 'password'
+        )
 
 
 class UserSerializer(serializers.ModelSerializer):

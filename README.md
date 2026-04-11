@@ -85,9 +85,9 @@ docker-compose exec backend python manage.py load_ingredients
 
 ## Доступ к проекту
 
-* Сайт: http://foodgramyandexprac.duckdns.org
-* API: http://foodgramyandexprac.duckdns.org/api/
-* Админка: http://foodgramyandexprac.duckdns.org/admin/
+* Сайт: https://foodgramyandexprac.duckdns.org/
+* API: https://foodgramyandexprac.duckdns.org/api/
+* Админка: https://foodgramyandexprac.duckdns.org/admin/
 
 
 ## Данные для входа в админку

@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.db.models import Count
+from django.forms.models import BaseInlineFormSet
+from django.core.exceptions import ValidationError
 
 from .models import (
     Recipe,
@@ -11,10 +13,22 @@ from .models import (
 )
 
 
+class IngredientInlineFormset(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        count = 0
+        for form in self.forms:
+            if (not form.cleaned_data.get('DELETE')
+                    and form.cleaned_data.get('ingredient')):
+                count += 1
+        if count < 1:
+            raise ValidationError('Добавьте хотя бы один ингредиент!')
+
+
 class IngredientInRecipeInline(admin.TabularInline):
     model = IngredientInRecipe
-    extra = 1
-    autocomplete_fields = ('ingredient',)
+    formset = IngredientInlineFormset
+    min_num = 1
 
 
 @admin.register(Ingredient)
@@ -49,12 +63,6 @@ class RecipeAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.annotate(fav_count=Count('favorites'))
-
-
-@admin.register(IngredientInRecipe)
-class IngredientInRecipeAdmin(admin.ModelAdmin):
-    list_display = ('recipe', 'ingredient', 'amount')
-    search_fields = ('recipe__name', 'ingredient__name')
 
 
 @admin.register(Favorite)

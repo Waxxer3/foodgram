@@ -90,11 +90,6 @@ docker-compose exec backend python manage.py load_ingredients
 * Админка: https://foodgramyandexprac.duckdns.org/admin/
 
 
-## Данные для входа в админку
-
-* Адрес: waxxer3@gmail.com
-* Пароль: 57193
-
 ## Автор
 
 * Waxxer3
